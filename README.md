@@ -1,4 +1,4 @@
-IP Filter: A light-weight IP address based connection filtering system
+IP Filter: A light-weight IP address based filtering system
 =================================================================================
 
 ## Version
