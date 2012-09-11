@@ -18,6 +18,9 @@ Recommended installation is with npm. To add node-ipfilter to your project, do:
     npm install ipfilter
 
 ## Usage with Express
+
+Blacklisting certain IP addresses, while allowing all other IPs:
+
 ```javascript
 // Init dependencies
 var express = require('express')
@@ -30,6 +33,23 @@ var ips = ['127.0.0.1'];
 
 // Create the server
 app.use(ipfilter(ips));
+app.listen(3000);
+```
+
+Whitelisting certain IP addresses, while denying all other IPs:
+
+```javascript
+// Init dependencies
+var express = require('express')
+    , ipfilter = require('ipfilter')
+    , app = express.createServer()
+    ;
+
+// Blacklist the following IPs
+var ips = ['127.0.0.1'];
+
+// Create the server
+app.use(ipfilter(ips, {mode: 'allow'}));
 app.listen(3000);
 ```
 
