@@ -1,27 +1,49 @@
 IP Filter: A light-weight IP address based filtering system
 =================================================================================
 
+This package provides easy IP based access control. This can be achieved either by blacklisting certain IPs and whitelisting all others, or whitelisting certain IPs and blacklisting all others.
+
+[![Build Status](https://secure.travis-ci.org/Dwolla/node-ipfilter.png?branch=master)](http://travis-ci.org/Dwolla/node-ipfilter)
+
 ## Version
-0.0.3
+0.0.4
 
 ## Requirements
 - [Node](http://github.com/ry/node)
 
 ## Installation
 
-Recommended installation is with npm. To add express-csrf to your project, do:
+Recommended installation is with npm. To add node-ipfilter to your project, do:
 
     npm install ipfilter
 
-## Usage
+## Usage with Express
+```javascript
+// Init dependencies
+var express = require('express')
+    , ipfilter = require('ipfilter')
+    , app = express.createServer()
+    ;
 
-    var express = require('express'),
-        ipfilter = require('ipfilter'),
-        ips = ['127.0.0.1'];
+// Blacklist the following IPs
+var ips = ['127.0.0.1'];
 
-    app = express.createServer();
-    app.use(ipfilter(ips));
-    app.listen(3000);
+// Create the server
+app.use(ipfilter(ips));
+app.listen(3000);
+```
+
+## Changelog
+
+0.0.4
+
+* Add tests
+* Update docs
+* Refactor, and restyle
+
+0.0.1
+
+* First revision
 
 ## Credits
 
@@ -31,7 +53,7 @@ Michael Schonfeld &lt;michael@dwolla.com&gt;
 
 (The MIT License)
 
-Copyright (c) 2011 Dwolla &lt;michael@dwolla.com&gt;
+Copyright (c) 2012 Dwolla &lt;michael@dwolla.com&gt;
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
