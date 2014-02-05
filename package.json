@@ -1,5 +1,5 @@
 {
-  "name": "ipfilter",
+  "name": "express-ipfilter",
   "description": "A light-weight IP address based filtering system",
   "version": "0.0.5",
   "author": "BaM Interactive",
@@ -16,7 +16,8 @@
     "ipfilter",
     "ip filter",
     "ipban",
-    "ip ban"
+    "ip ban",
+    "express"
   ],
   "repository": {
     "type": "git",
