@@ -89,4 +89,4 @@ app.listen(3000);
 
 ## Credits
 
-BaM Interactive - [code.bamideas.com](code.bamideas.com)
+BaM Interactive - [code.bamideas.com](http://code.bamideas.com)
