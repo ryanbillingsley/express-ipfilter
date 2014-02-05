@@ -8,14 +8,11 @@ This package provides easy IP based access control. This can be achieved either 
 ## Version
 0.0.5
 
-## Requirements
-- [Node](http://github.com/ry/node)
-
 ## Installation
 
 Recommended installation is with npm. To add node-ipfilter to your project, do:
 
-    npm install ipfilter
+    npm install express-ipfilter
 
 ## Usage with Express
 
