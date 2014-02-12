@@ -1,8 +1,11 @@
 language: node_js
-deploy:
-  api_key:
-    secure: O+oCMcJ+R47bZY/Okj3AuhTXT+0wLqBhTk/Q+C7beBBiPWpTThslj4NgXJ4RxLYMvkK8U+6F8jHkhhPaZ2ukerOppoM3VSWEr8Q8rWZWA0663KGDE+ebuy5yLarxLMuPZnqTlu2g7ueUv+HX9uMIYhiRUu4p975TRrKBGlOuVd0=
-  email: ryanbbillingsley@gmail.com
-  provider: npm
 node_js:
-- 0.6
+- 0.1
+deploy:
+  provider: npm
+  email: ryanbbillingsley@gmail.com
+  api_key:
+    secure: Qgbn3utIdeoHirKNyWJ+qopZbY2QtxFd1+ry1Kbt0PAUEumY5kDgLIECXQbO/hAaT3AQ2EFNOVyotoCOjZVF0HgXf57zqNHlh5xsqm/U4pjEdUsZHeg9WDHFWmCuslzUuS8thX7hR6QndnANy566lUEW3ZuHtOd6Zo7NAWmzkNs=
+  on:
+    tags: true
+    repo: baminteractive/node-ipfilter
