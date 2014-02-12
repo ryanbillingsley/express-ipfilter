@@ -1,4 +1,8 @@
 language: node_js
-
+deploy:
+  api_key:
+    secure: O+oCMcJ+R47bZY/Okj3AuhTXT+0wLqBhTk/Q+C7beBBiPWpTThslj4NgXJ4RxLYMvkK8U+6F8jHkhhPaZ2ukerOppoM3VSWEr8Q8rWZWA0663KGDE+ebuy5yLarxLMuPZnqTlu2g7ueUv+HX9uMIYhiRUu4p975TRrKBGlOuVd0=
+  email: ryanbbillingsley@gmail.com
+  provider: npm
 node_js:
-  - 0.6
+- 0.6
