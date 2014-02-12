@@ -6,7 +6,7 @@ This package provides easy IP based access control. This can be achieved either 
 [![Build Status](https://secure.travis-ci.org/baminteractive/node-ipfilter.png?branch=master)](http://travis-ci.org/baminteractive/node-ipfilter)
 
 ## Version
-0.0.6
+0.0.7
 
 ## Installation
 
@@ -53,13 +53,6 @@ app.listen(3000);
 Using CIDR subnet masks for ranges:
 
 ```javascript
-// Init dependencies
-var express = require('express')
-    , ipfilter = require('ipfilter')
-    , app = express.createServer()
-    ;
-
-// Blacklist the following IPs
 var ips = ['127.0.0.1/24'];
 
 // Create the server
@@ -67,7 +60,21 @@ app.use(ipfilter(ips, {mode: 'allow'}));
 app.listen(3000);
 ```
 
+Using IP ranges:
+
+```javascript
+var ips = [['127.0.0.1','127.0.0.10']];
+
+// Create the server
+app.use(ipfilter(ips, {mode: 'allow'}));
+app.listen(3000);
+```
+
 ## Changelog
+
+0.0.7
+
+* Add support ip ranges.
 
 0.0.6
 
