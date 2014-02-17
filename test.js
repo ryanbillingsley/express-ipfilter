@@ -83,6 +83,13 @@ describe('enforcing IP address whitelist restrictions', function(){
     });
   });
 
+  it('should allow whitelisted port ips',function(done){
+    this.req.connection.remoteAddress = '127.0.0.1:84849';
+    this.ipfilter( this.req, {}, function(){
+      done();
+    });
+  });
+
   it('should deny all non-whitelisted ips', function( done ){
     this.req.connection.remoteAddress = '127.0.0.2';
     var res = {
