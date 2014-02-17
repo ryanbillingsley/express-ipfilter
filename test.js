@@ -262,6 +262,13 @@ describe('using ranges',function(){
       });
     });
 
+    it('should allow whitelisted ips with port numbers', function( done ){
+      this.req.connection.remoteAddress = '127.0.0.1:93923';
+      this.ipfilter( this.req, {}, function(){
+        done();
+      });
+    });
+
     it('should allow whitelisted forwarded ips', function( done ){
       this.req.headers['x-forwarded-for'] = '127.0.0.1';
       this.ipfilter( this.req, {}, function(){
