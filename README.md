@@ -6,7 +6,7 @@ This package provides easy IP based access control. This can be achieved either 
 [![Build Status](https://secure.travis-ci.org/baminteractive/node-ipfilter.png?branch=master)](http://travis-ci.org/baminteractive/node-ipfilter)
 
 ## Version
-0.0.15
+0.0.16
 
 ## Installation
 
@@ -71,6 +71,10 @@ app.listen(3000);
 ```
 
 ## Changelog
+
+0.0.16
+
+* Fixing bug when no IP address can be determined
 
 0.0.15
 
