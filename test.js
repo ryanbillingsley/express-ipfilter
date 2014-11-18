@@ -108,3 +108,59 @@ describe('enforcing IP address whitelist restrictions', function(){
     this.ipfilter( this.req, res, function(){});
   });
 });
+
+describe('external logger function', function () {
+
+    it('should log to a passed logger exactly one message', function (done) {
+        var messages = [];
+        var logF = function logFF(message) {
+            messages.push(message);
+        };
+        this.ipfilter = ipfilter(['127.0.0.1'], {log: true, logF: logF});
+        this.req = {
+            session: {},
+            headers: [],
+            connection: {
+                remoteAddress: ''
+            }
+        };
+
+        this.req.connection.remoteAddress = '127.0.0.2';
+        var res = {
+            end: function (msg) {
+                assert.equal(1, messages.length);
+                done();
+            }
+        };
+
+        this.ipfilter(this.req, res, function () {
+        });
+    });
+
+    it('should log to a passed logger  the correct message', function (done) {
+        var messages = [];
+        var logF = function logFF(message) {
+            messages.push(message);
+        };
+        this.ipfilter = ipfilter(['127.0.0.1'], {log: true, logF: logF});
+        this.req = {
+            session: {},
+            headers: [],
+            connection: {
+                remoteAddress: ''
+            }
+        };
+
+
+        this.req.connection.remoteAddress = '127.0.0.2';
+        var res = {
+            end: function (msg) {
+                assert.equal('Access denied to IP address: 127.0.0.2', messages[0]);
+                done();
+            }
+        };
+
+        this.ipfilter(this.req, res, function () {
+        });
+    });
+});
