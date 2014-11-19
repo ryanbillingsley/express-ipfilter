@@ -21,7 +21,7 @@ Blacklisting certain IP addresses, while allowing all other IPs:
 ```javascript
 // Init dependencies
 var express = require('express')
-    , ipfilter = require('ipfilter')
+    , ipfilter = require('express-ipfilter')
     , app = express.createServer()
     ;
 
@@ -38,7 +38,7 @@ Whitelisting certain IP addresses, while denying all other IPs:
 ```javascript
 // Init dependencies
 var express = require('express')
-    , ipfilter = require('ipfilter')
+    , ipfilter = require('express-ipfilter')
     , app = express.createServer()
     ;
 
