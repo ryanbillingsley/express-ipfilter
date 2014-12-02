@@ -42,7 +42,7 @@ var express = require('express')
     , app = express.createServer()
     ;
 
-// Blacklist the following IPs
+// Whitelist the following IPs
 var ips = ['127.0.0.1'];
 
 // Create the server
