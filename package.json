@@ -21,7 +21,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "http://github.com/baminteractive/node-ipfilter.git"
+    "url": "http://github.com/baminteractive/express-ipfilter.git"
   },
   "main": "index.js",
   "scripts": {
