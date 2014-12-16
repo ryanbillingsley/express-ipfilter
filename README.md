@@ -1,4 +1,4 @@
-IP Filter: A light-weight IP address based filtering system
+express-ipfilter: A light-weight IP address based filtering system
 =================================================================================
 
 This package provides easy IP based access control. This can be achieved either by blacklisting certain IPs and whitelisting all others, or whitelisting certain IPs and blacklisting all others.
