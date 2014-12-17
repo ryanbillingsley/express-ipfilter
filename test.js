@@ -525,28 +525,49 @@ describe('external logger function', function () {
 
 });
 
-describe('issue 6',function(){
-    beforeEach(function(){
-        this.ipfilter = ipfilter(['72.30.0.0/26', '127.0.0.1/24'], { cidr: true, mode: 'deny', log: false });
-        this.req = {
-            session: {},
-            headers: [],
-            connection: {
-                remoteAddress: ''
-            }
-        };
+describe('an array of cidr blocks',function(){
+    describe('blacklist',function(){
+        beforeEach(function(){
+            this.ipfilter = ipfilter(['72.30.0.0/26', '127.0.0.1/24'], { cidr: true, mode: 'deny', log: false });
+            this.req = {
+                session: {},
+                headers: [],
+                connection: {
+                    remoteAddress: ''
+                }
+            };
+        });
+
+        it('should deny all blacklisted ips', function( done ){
+            this.req.connection.remoteAddress = '127.0.0.1';
+            var res = {
+                end: function(){
+                    assert.equal( 401, res.statusCode );
+                    done();
+                }
+            };
+
+            this.ipfilter( this.req, res, function(){});
+        });
     });
 
-    it('should deny all blacklisted ips', function( done ){
-        this.req.connection.remoteAddress = '127.0.0.1';
-        var res = {
-            end: function(){
-                assert.equal( 401, res.statusCode );
+    describe('whitelist',function(){
+        beforeEach(function(){
+            this.ipfilter = ipfilter(['72.30.0.0/26', '127.0.0.1/24'], { cidr: true, mode: 'allow', log: false });
+            this.req = {
+                session: {},
+                headers: [],
+                connection: {
+                    remoteAddress: ''
+                }
+            };
+        });
+
+        it('should allow all whitelisted ips', function( done ){
+            this.req.connection.remoteAddress = '127.0.0.1';
+            this.ipfilter( this.req, {}, function(){
                 done();
-            }
-        };
-
-        this.ipfilter( this.req, res, function(){});
+            });
+        });
     });
-
 });
