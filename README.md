@@ -72,6 +72,10 @@ app.listen(3000);
 
 ## Changelog
 
+0.0.18
+
+* Fixing bug when array of CIDR blocks are used
+
 0.0.16
 
 * Fixing bug when no IP address can be determined
