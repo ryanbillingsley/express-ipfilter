@@ -571,3 +571,69 @@ describe('an array of cidr blocks',function(){
         });
     });
 });
+
+//CloudFlare Tests
+describe('enforcing cloudflare based client IP address blacklist restrictions', function(){
+
+    beforeEach(function(){
+        this.ipfilter = ipfilter([ '127.0.0.1' ], { log: false });
+        this.req = {
+            session: {},
+            headers: [],
+            connection: {
+                remoteAddress: ''
+            }
+        };
+    });
+
+    it('should allow all non-blacklisted forwarded ips', function( done ){
+        this.req.headers['cf-connecting-ip'] = '127.0.0.2';
+        this.ipfilter( this.req, {}, function(){
+            done();
+        });
+    });
+
+    it('should deny all blacklisted forwarded ips', function( done ){
+        this.req.headers['cf-connecting-ip'] = '127.0.0.1';
+        var res = {
+            end: function(){
+                assert.equal( 401, res.statusCode );
+                done();
+            }
+        };
+
+        this.ipfilter( this.req, res, function(){});
+    });
+
+});
+describe('enforcing cloudflare based client IP address whitelist restrictions', function(){
+    beforeEach(function(){
+        this.ipfilter = ipfilter([ '127.0.0.1' ], { log: false, mode: 'allow' });
+        this.req = {
+            session: {},
+            headers: [],
+            connection: {
+                remoteAddress: ''
+            }
+        };
+    });
+
+    it('should allow whitelisted forwarded ips', function( done ){
+        this.req.headers['cf-connecting-ip'] = '127.0.0.1';
+        this.ipfilter( this.req, {}, function(){
+            done();
+        });
+    });
+    it('should deny all non-whitelisted forwarded ips', function( done ){
+        this.req.headers['cf-connecting-ip'] = '127.0.0.2';
+        var res = {
+            end: function(){
+                assert.equal( 401, res.statusCode );
+                done();
+            }
+        };
+
+        this.ipfilter( this.req, res, function(){});
+    });
+
+})
