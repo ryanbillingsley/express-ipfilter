@@ -606,6 +606,77 @@ describe('enforcing cloudflare based client IP address blacklist restrictions', 
     });
 
 });
+
+describe('ignore cloudflare based client IP address when disabled', function () {
+    beforeEach(function () {
+        this.ipfilter = ipfilter(['127.0.0.1'], {log: false, allowCloudFlare: false});
+        this.req = {
+            session: {},
+            headers: [],
+            connection: {
+                remoteAddress: '127.0.0.1'
+            }
+        }
+    });
+
+    it('should deny blacklisted not regarding cloudflare header', function (done) {
+        this.req.headers['cf-connecting.ip'] = '127.0.0.2';
+        var res = {
+            end: function () {
+                assert.equal(401, res.statusCode);
+                done();
+            }
+        };
+
+        this.ipfilter(this.req, res, function () {
+        });
+    });
+
+    it('should allow valid remoteAddress not regarding cloudflare header', function (done) {
+        this.req.headers['cf-connecting.ip'] = '127.0.0.1';
+        this.req.connection.remoteAddress = '127.0.0.2';
+
+        this.ipfilter(this.req, {}, function () {
+            done();
+        });
+    });
+});
+
+describe('ignore forwarded client IP address when disabled', function () {
+    beforeEach(function () {
+        this.ipfilter = ipfilter(['127.0.0.1'], {log: false, allowForwardedIps: false});
+        this.req = {
+            session: {},
+            headers: [],
+            connection: {
+                remoteAddress: '127.0.0.1'
+            }
+        }
+    });
+
+    it('should deny blacklisted not regarding forwarded header', function (done) {
+        this.req.headers['cf-connecting.ip'] = '127.0.0.2';
+        var res = {
+            end: function () {
+                assert.equal(401, res.statusCode);
+                done();
+            }
+        };
+
+        this.ipfilter(this.req, res, function () {
+        });
+    });
+
+    it('should allow valid remoteAddress not regarding forwarded header', function (done) {
+        this.req.headers['cf-connecting.ip'] = '127.0.0.1';
+        this.req.connection.remoteAddress = '127.0.0.2';
+
+        this.ipfilter(this.req, {}, function () {
+            done();
+        });
+    });
+});
+
 describe('enforcing cloudflare based client IP address whitelist restrictions', function(){
     beforeEach(function(){
         this.ipfilter = ipfilter([ '127.0.0.1' ], { log: false, mode: 'allow' });
