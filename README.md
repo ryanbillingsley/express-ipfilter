@@ -6,7 +6,7 @@ This package provides easy IP based access control. This can be achieved either 
 [![Circle CI](https://circleci.com/gh/baminteractive/express-ipfilter/tree/master.svg?style=svg)](https://circleci.com/gh/baminteractive/express-ipfilter/tree/master)
 
 ## Version
-0.0.19
+0.0.20
 
 ## Installation
 
@@ -71,6 +71,10 @@ app.listen(3000);
 ```
 
 ## Changelog
+
+0.0.20
+
+* Added a setting to explicitly allow CloudFlare and Forwarded IPs.  By default they are set to not allow these headers.  Thanks to @longstone!
 
 0.0.19
 
