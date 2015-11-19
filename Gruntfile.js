@@ -12,6 +12,13 @@ module.exports = function(grunt){
         }
       }
     },
+    copy: {
+      ci: {
+        files: [
+          { expand: true, src: 'test-results.xml', dest: process.env.CIRCLE_TEST_REPORTS+'/mocha/' }
+        ]
+      }
+    },
     eslint: {
       all: ['Gruntfile.js', 'lib/**/*.js', 'test/**/*.js']
     },
@@ -30,16 +37,31 @@ module.exports = function(grunt){
         }
       }
     },
+    mochaTest: {
+      ci: {
+        src: 'test/**/*.js',
+        options: {
+          reporter: 'mocha-junit-reporter'
+        }
+      }
+    },
     mocha_istanbul: {
       coverage: {
-        src: 'test', // a folder works nicely
+        src: 'test',
         options: {
           mask: '*.spec.js'
         }
       },
+      ci: {
+        src: 'test',
+        options: {
+          mask: '*.spec.js',
+        }
+      }
     },
   });
 
   grunt.registerTask('default', ['eslint','babel:dist']);
   grunt.registerTask('test', ['eslint','babel','mocha_istanbul']);
+  grunt.registerTask('ci', ['eslint','babel','mochaTest:ci','mocha_istanbul:ci']);
 };
