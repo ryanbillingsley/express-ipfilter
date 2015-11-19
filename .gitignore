@@ -5,3 +5,4 @@ npm-debug.log
 .ideatest/
 lib/
 test/
+test-results.xml
