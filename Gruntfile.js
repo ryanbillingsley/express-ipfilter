@@ -63,5 +63,5 @@ module.exports = function(grunt){
 
   grunt.registerTask('default', ['eslint','babel:dist']);
   grunt.registerTask('test', ['eslint','babel','mocha_istanbul']);
-  grunt.registerTask('ci', ['eslint','babel','mochaTest:ci','mocha_istanbul:ci']);
+  grunt.registerTask('ci', ['eslint','babel','mochaTest:ci','mocha_istanbul:ci','copy:ci']);
 };
