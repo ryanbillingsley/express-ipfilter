@@ -1,0 +1,17 @@
+machine:
+    node:
+        version: 0.12.7
+dependencies:
+    override:
+        - npm install
+        - npm install grunt-cli -g
+test:
+    override:
+      - grunt ci
+deployment:
+    production:
+        branch: master
+        commands:
+            - grunt
+            - echo -e "$NPM_USERNAME\n$NPM_PASSWORD\n$NPM_EMAIL" | npm login
+            - npm run push

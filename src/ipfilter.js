@@ -32,14 +32,12 @@ Netmask = require('netmask').Netmask;
  *  - `errorCode` the HTTP status code to use when denying access. Defaults to 401.
  *  - `errorMessage` the error message to use when denying access. Defaults to 'Unauthorized'.
  *  - `allowPrivateIPs` whether to grant access to any IP using the private IP address space unless explicitly denied. Defaults to false.
- *  - `allowCloudFlare` set false to disable cloud flare header
- *  - `allowForwardedIps` set false to disable forwared ips
  *  - 'cidr' whether ips are ips with a submnet mask.  Defaults to 'false'.
  *  - 'ranges' whether ranges are supplied as ips
  *  - 'excluding' routes that should be excluded from ip filtering
  *
- * @param ips [Array] IP addresses
- * @param opts {Object} options
+ * @param [Array] IP addresses
+ * @param {Object} options
  * @api public
  */
 module.exports = function ipfilter(ips, opts) {
@@ -53,10 +51,6 @@ module.exports = function ipfilter(ips, opts) {
         errorCode: 401,
         errorMessage: 'Unauthorized',
         allowPrivateIPs: false,
-        allowCloudFlare: false,
-        allowForwardedIps: false,
-        cidr: false,
-        ranges: false,
         excluding: []
     });
 
@@ -65,27 +59,25 @@ module.exports = function ipfilter(ips, opts) {
 
         var forwardedIpsStr = req.headers['x-forwarded-for'];
         //Allow getting cloudflare connecting client IP
-        var cloudFlareConnectingIp=req.headers['cf-connecting-ip'];
+        var cloudFlareConnectingIp = req.headers['cf-connecting-ip'];
 
-        if (settings.allowForwardedIps && forwardedIpsStr) {
+        if (forwardedIpsStr) {
             var forwardedIps = forwardedIpsStr.split(',');
             ipAddress = forwardedIps[0];
-        }
-
-        if(settings.allowCloudFlare && cloudFlareConnectingIp!=undefined){
-            ipAddress=cloudFlareConnectingIp;
         }
 
         if (!ipAddress) {
             ipAddress = req.connection.remoteAddress;
         }
-
+        if(cloudFlareConnectingIp !== undefined){
+            ipAddress=cloudFlareConnectingIp;
+        }
 
         if(!ipAddress){
             return '';
         }
 
-        if(ipAddress.indexOf(':') !== -1){
+        if(ipAddress.indexOf(':') !== -1 && ipAddress.indexOf('::') === -1){
             ipAddress = ipAddress.split(':')[0];
         }
 
@@ -93,49 +85,70 @@ module.exports = function ipfilter(ips, opts) {
     };
 
     var matchClientIp = function(ip){
-        var mode = settings.mode.toLowerCase(),
-            allowedIp = false,
-            notBannedIp = false,
-            isPrivateIpOkay = false; // Normalize mode
+        var mode = settings.mode.toLowerCase();
 
-        if(settings.cidr){
-            for(var i = 0; i < ips.length; i++){
+        var result = _.invoke(ips,testIp,ip,mode);
 
-                var block = new Netmask(ips[i]);
-
-                if(block.contains(ip)){
-                    allowedIp = (mode === 'allow');
-                    if(mode === 'deny'){
-                        notBannedIp = false;
-                    }
-                    break;
-                }else{
-                    notBannedIp = (mode === 'deny');
-                    isPrivateIpOkay = settings.allowPrivateIPs && iputil.isPrivate(ip);
-                }
-            }
-        }else if(settings.ranges){
-            var filteredSet = _.filter(ips,function(ipSet){
-                if(ipSet.length > 1){
-                    var startIp = iputil.toLong(ipSet[0]);
-                    var endIp = iputil.toLong(ipSet[1]);
-                    var longIp = iputil.toLong(ip);
-                    return  longIp >= startIp && longIp <= endIp;
-                }else{
-                    return ip === ipSet[0];
-                }
-            });
-
-            allowedIp = (mode === 'allow' && filteredSet.length > 0);
-            notBannedIp = (mode === 'deny' && filteredSet.length === 0);
-            isPrivateIpOkay = settings.allowPrivateIPs && iputil.isPrivate(ip) && !(mode === 'deny' && filteredSet.length > 0);
+        if(mode === 'allow'){
+            return _.some(result);
         }else{
-            allowedIp = (mode === 'allow' && ips.indexOf(ip) !== -1);
-            notBannedIp = (mode === 'deny' && ips.indexOf(ip) === -1);
-            isPrivateIpOkay = settings.allowPrivateIPs && iputil.isPrivate(ip) && !(mode === 'deny' && ips.indexOf(ip) !== -1);
+            return _.every(result);
+        }
+    };
+
+    var testIp = function(ip,mode){
+        var constraint = this;
+
+        // Check if it is an array or a string
+        if(typeof constraint === 'string'){
+            var cidrRegex = /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$/;
+            if(cidrRegex.test(constraint)){
+                return testCidrBlock(ip,constraint,mode);
+            }else{
+                return testExplicitIp(ip,constraint,mode);
+            }
         }
 
-        return allowedIp || notBannedIp || isPrivateIpOkay;
+        if(typeof constraint === 'object'){
+            return testRange(ip,constraint,mode);
+        }
+    };
+
+    var testExplicitIp = function(ip,constraint,mode){
+        if(ip === constraint){
+            return mode === 'allow';
+        }else{
+            return mode === 'deny';
+        }
+    };
+
+    var testCidrBlock = function(ip,constraint,mode){
+        var block = new Netmask(constraint);
+
+        if(block.contains(ip)){
+            return mode === 'allow';
+        }else{
+            return mode === 'deny';
+        }
+    };
+
+    var testRange = function(ip,constraint,mode){
+        var filteredSet = _.filter(ips,function(constraint){
+            if(constraint.length > 1){
+                var startIp = iputil.toLong(constraint[0]);
+                var endIp = iputil.toLong(constraint[1]);
+                var longIp = iputil.toLong(ip);
+                return  longIp >= startIp && longIp <= endIp;
+            }else{
+                return ip === constraint[0];
+            }
+        });
+
+        if(filteredSet.length > 0){
+            return mode === 'allow';
+        }else{
+            return mode === 'deny';
+        }
     };
 
     return function(req, res, next) {
@@ -147,7 +160,7 @@ module.exports = function ipfilter(ips, opts) {
 
             if(results.length > 0){
                 if(settings.log){
-                    settings.logF('Access granted for excluded path: ' + results[0]);
+                    console.log('Access granted for excluded path: ' + results[0]);
                 }
                 return next();
             }

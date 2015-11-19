@@ -2,4 +2,7 @@ node_modules
 coverage/
 .jshintrc
 npm-debug.log
-.idea
+.ideatest/
+lib/
+test/
+test-results.xml
