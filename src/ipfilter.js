@@ -60,6 +60,9 @@ module.exports = function ipfilter(ips, opts) {
         var forwardedIpsStr = req.headers['x-forwarded-for'];
         //Allow getting cloudflare connecting client IP
         var cloudFlareConnectingIp = req.headers['cf-connecting-ip'];
+        
+        //Allow getting codio connecting client IP
+        var codioConnectingIp=req.headers['x-real-ip'];
 
         if (forwardedIpsStr) {
             var forwardedIps = forwardedIpsStr.split(',');
@@ -71,6 +74,9 @@ module.exports = function ipfilter(ips, opts) {
         }
         if(cloudFlareConnectingIp !== undefined){
             ipAddress=cloudFlareConnectingIp;
+        }
+        if(codioConnectingIp!=undefined){
+            ipAddress=codioConnectingIp;
         }
 
         if(!ipAddress){

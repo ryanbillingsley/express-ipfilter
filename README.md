@@ -87,6 +87,8 @@ Run tests by using
 This will run `eslint`,`babel`, and `mocha` and output coverage data into `coverage`.  Any pull request you submit needs to be accompanied by a test.
 
 ## Changelog
+0.0.20
+ added codio x-real-ip header
 
 0.0.22
 
