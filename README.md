@@ -6,7 +6,7 @@ This package provides easy IP based access control. This can be achieved either 
 [![Circle CI](https://circleci.com/gh/baminteractive/express-ipfilter/tree/master.svg?style=svg)](https://circleci.com/gh/baminteractive/express-ipfilter/tree/master)
 
 ## Version
-0.0.20
+0.0.21
 
 ## Installation
 
@@ -69,6 +69,22 @@ var ips = [['127.0.0.1','127.0.0.10']];
 app.use(ipfilter(ips, {mode: 'allow'}));
 app.listen(3000);
 ```
+
+## Contributing
+
+### Building from source
+
+You can run `grunt` to build the source.  This will run `eslint` and `babel` against `src/ipfilter.js`.
+
+There is an included `example` project that will load the package from the local build for testing.
+
+### Running Tests
+
+Run tests by using
+
+`grunt test`
+
+This will run `eslint`,`babel`, and `mocha` and output coverage data into `coverage`.  Any pull request you submit needs to be accompanied by a test.
 
 ## Changelog
 

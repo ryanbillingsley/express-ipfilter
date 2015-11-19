@@ -1,15 +1,25 @@
 {
   "name": "express-ipfilter",
   "description": "A light-weight IP address based filtering system",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "author": "BaM Interactive",
   "dependencies": {
-    "netmask": "~1.0.4",
-    "ip": "~0.3.0",
-    "lodash": "~2.4.1"
+    "netmask": "~1.0.5",
+    "ip": "~1.1.0",
+    "lodash": "~3.10.1"
   },
   "devDependencies": {
-    "mocha": "~1.4.2"
+    "babel-preset-es2015": "^6.1.18",
+    "grunt": "^0.4.5",
+    "grunt-babel": "^6.0.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-eslint": "^17.3.1",
+    "grunt-mocha-istanbul": "^3.0.1",
+    "grunt-mocha-test": "~0.12.7",
+    "istanbul": "^0.4.0",
+    "load-grunt-tasks": "^3.3.0",
+    "mocha": "^2.3.4",
+    "publish": "^0.5.0"
   },
   "keywords": [
     "middleware",
@@ -25,7 +35,8 @@
   },
   "main": "index.js",
   "scripts": {
-    "test": "mocha -R spec"
+    "test": "mocha -R spec",
+    "push": "publish"
   },
   "license": "MIT"
 }
