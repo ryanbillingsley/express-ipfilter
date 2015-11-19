@@ -14,4 +14,5 @@ deployment:
         commands:
             - grunt
             - echo -e "$NPM_USERNAME\n$NPM_PASSWORD\n$NPM_EMAIL" | npm login
+            - npm version patch
             - npm run push
