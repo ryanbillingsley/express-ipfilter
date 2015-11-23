@@ -6,7 +6,7 @@ This package provides easy IP based access control. This can be achieved either 
 [![Circle CI](https://circleci.com/gh/baminteractive/express-ipfilter/tree/master.svg?style=svg)](https://circleci.com/gh/baminteractive/express-ipfilter/tree/master)
 
 ## Version
-0.0.23
+0.0.24
 
 ## Installation
 
@@ -87,8 +87,11 @@ Run tests by using
 This will run `eslint`,`babel`, and `mocha` and output coverage data into `coverage`.  Any pull request you submit needs to be accompanied by a test.
 
 ## Changelog
+0.0.24
+* Added lib to version control
+
 0.0.23
- added codio x-real-ip header
+* added codio x-real-ip header
 
 0.0.22
 
