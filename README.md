@@ -70,6 +70,16 @@ app.use(ipfilter(ips, {mode: 'allow'}));
 app.listen(3000);
 ```
 
+## Options
+
+| Property      | Description   | Type  | Default|
+| ------------- |-------------| -----|--------|
+| mode   | whether to *deny* or *allow* to the IPs provided | string|deny|
+| log   | console log actions | boolean|true|
+| errorCode   | the HTTP status code to use when denying access | number|401|
+| errorMessage   | the error message to use when denying access | string|Unauthorized|
+| excluding   | routes that should be excluded from ip filtering | array|[]|
+
 ## Contributing
 
 ### Building from source
