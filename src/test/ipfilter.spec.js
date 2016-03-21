@@ -247,6 +247,7 @@ describe('using cidr block',function(){
             });
         });
     });
+
 });
 
 describe('using ranges',function(){
@@ -728,4 +729,132 @@ describe('enforcing codio based client IP address whitelist restrictions', funct
         this.ipfilter( this.req, res, function(){});
     });
 
+});
+
+describe('mixing different types of filters with IPv4 and IPv6',function(){
+
+  var ips = ['127.0.0.1', '192.168.1.3/28', '2001:4860:8006::62','2001:4860:8007::62/64',['127.0.0.3', '127.0.0.35']];
+
+  describe('with a whitelist', function () {
+
+       beforeEach(function(){
+            this.ipfilter = ipfilter(ips, { cidr: true, mode: 'allow', log: false });
+            this.req = {
+                session: {},
+                headers: [],
+                connection: {
+                    remoteAddress: ''
+                }
+            };
+        });
+
+        it('should allow explicit IPv4 ips',function(done){
+            this.req.connection.remoteAddress = '127.0.0.1';
+            this.ipfilter( this.req, {}, function(){
+                done();
+            });
+        });
+
+        it('should allow IPv4 ips in a cidr block',function(done){
+            this.req.connection.remoteAddress = '192.168.1.1';
+            this.ipfilter( this.req, {}, function(){
+                done();
+            });
+        });
+
+        it('should allow IPv4 ips in a range',function(done){
+            this.req.connection.remoteAddress = '127.0.0.20';
+            this.ipfilter( this.req, {}, function(){
+                done();
+            });
+        });
+
+        it('should allow explicit IPv6 ips',function(done){
+            this.req.connection.remoteAddress = '2001:4860:8006::62';
+            this.ipfilter( this.req, {}, function(){
+                done();
+            });
+        });
+
+        it('should allow IPv6 ips in a cidr block',function(done){
+            this.req.connection.remoteAddress = '2001:4860:8007:0::62';
+            this.ipfilter( this.req, {}, function(){
+                done();
+            });
+        });
+
+    });
+
+    describe('with a blacklist', function(){
+        beforeEach(function(){
+            this.ipfilter = ipfilter(ips, { mode: 'deny', log: false });
+            this.req = {
+                session: {},
+                headers: [],
+                connection: {
+                    remoteAddress: ''
+                }
+            };
+        });
+
+        it('should deny explicit ips',function(done){
+            this.req.connection.remoteAddress = '127.0.0.1';
+            var res = {
+                end: function(){
+                    assert.equal( 401, res.statusCode );
+                    done();
+                }
+            };
+
+            this.ipfilter( this.req, res, function(){});
+        });
+
+        it('should deny ips in a cidr block',function(done){
+            this.req.connection.remoteAddress = '192.168.1.15';
+            var res = {
+                end: function(){
+                    assert.equal( 401, res.statusCode );
+                    done();
+                }
+            };
+
+            this.ipfilter( this.req, res, function(){});
+        });
+
+        it('should deny explicit IPv6 ips',function(done){
+            this.req.connection.remoteAddress = '2001:4860:8006::62';
+            var res = {
+                end: function(){
+                    assert.equal( 401, res.statusCode );
+                    done();
+                }
+            };
+
+            this.ipfilter( this.req, res, function(){});
+        });
+
+        it('should deny IPv6 ips in a cidr block',function(done){
+            this.req.connection.remoteAddress = '2001:4860:8007:0::62';
+            var res = {
+                end: function(){
+                    assert.equal( 401, res.statusCode );
+                    done();
+                }
+            };
+
+            this.ipfilter( this.req, res, function(){});
+        });
+
+        it('should deny ips in a range',function(done){
+            this.req.connection.remoteAddress = '127.0.0.15';
+            var res = {
+                end: function(){
+                    assert.equal( 401, res.statusCode );
+                    done();
+                }
+            };
+
+            this.ipfilter( this.req, res, function(){});
+        });
+    });
 });

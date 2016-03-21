@@ -11,7 +11,7 @@
  */
 var _ = require('lodash'),
 iputil = require('ip'),
-Netmask = require('netmask').Netmask;
+rangeCheck = require('range_check');
 
 /**
  * express-ipfilter:
@@ -31,9 +31,6 @@ Netmask = require('netmask').Netmask;
  *  - `log` console log actions. Defaults to true.
  *  - `errorCode` the HTTP status code to use when denying access. Defaults to 401.
  *  - `errorMessage` the error message to use when denying access. Defaults to 'Unauthorized'.
- *  - `allowPrivateIPs` whether to grant access to any IP using the private IP address space unless explicitly denied. Defaults to false.
- *  - 'cidr' whether ips are ips with a submnet mask.  Defaults to 'false'.
- *  - 'ranges' whether ranges are supplied as ips
  *  - 'excluding' routes that should be excluded from ip filtering
  *
  * @param [Array] IP addresses
@@ -60,7 +57,7 @@ module.exports = function ipfilter(ips, opts) {
         var forwardedIpsStr = req.headers['x-forwarded-for'];
         //Allow getting cloudflare connecting client IP
         var cloudFlareConnectingIp = req.headers['cf-connecting-ip'];
-        
+
         //Allow getting codio connecting client IP
         var codioConnectingIp=req.headers['x-real-ip'];
 
@@ -75,7 +72,7 @@ module.exports = function ipfilter(ips, opts) {
         if(cloudFlareConnectingIp !== undefined){
             ipAddress=cloudFlareConnectingIp;
         }
-        if(codioConnectingIp!=undefined){
+        if(codioConnectingIp !== undefined){
             ipAddress=codioConnectingIp;
         }
 
@@ -107,8 +104,7 @@ module.exports = function ipfilter(ips, opts) {
 
         // Check if it is an array or a string
         if(typeof constraint === 'string'){
-            var cidrRegex = /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$/;
-            if(cidrRegex.test(constraint)){
+            if(rangeCheck.validRange(constraint)){
                 return testCidrBlock(ip,constraint,mode);
             }else{
                 return testExplicitIp(ip,constraint,mode);
@@ -129,9 +125,7 @@ module.exports = function ipfilter(ips, opts) {
     };
 
     var testCidrBlock = function(ip,constraint,mode){
-        var block = new Netmask(constraint);
-
-        if(block.contains(ip)){
+        if(rangeCheck.inRange(ip, constraint)){
             return mode === 'allow';
         }else{
             return mode === 'deny';
@@ -166,7 +160,7 @@ module.exports = function ipfilter(ips, opts) {
 
             if(results.length > 0){
                 if(settings.log){
-                    console.log('Access granted for excluded path: ' + results[0]);
+                    logger('Access granted for excluded path: ' + results[0]);
                 }
                 return next();
             }
