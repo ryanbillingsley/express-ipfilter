@@ -97,6 +97,11 @@ Run tests by using
 This will run `eslint`,`babel`, and `mocha` and output coverage data into `coverage`.  Any pull request you submit needs to be accompanied by a test.
 
 ## Changelog
+0.0.25
+* Switched from netmask to range_check (uses ipaddr.js)
+* Added support for IPv6 CIDR
+* Fixed issue with mixed IPv4 and IPv6 rules
+
 0.0.24
 * Added lib to version control
 
