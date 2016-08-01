@@ -23,7 +23,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-var ips = ['207.67.95.138'];
+var ips = ['::ffff:127.0.0.1'];
 app.use(ipfilter(ips));
 
 app.use('/', routes);
