@@ -48,18 +48,32 @@ module.exports = function ipfilter(ips, opts) {
         errorCode: 401,
         errorMessage: 'Unauthorized',
         allowPrivateIPs: false,
+        allowForward: false,
+        allowCloudflare: false,
+        allowCodio: false,
         excluding: []
     });
 
     var getClientIp = function(req) {
         var ipAddress;
 
-        var forwardedIpsStr = req.headers['x-forwarded-for'];
-        //Allow getting cloudflare connecting client IP
-        var cloudFlareConnectingIp = req.headers['cf-connecting-ip'];
+        var forwardedIpsStr = "";
+
+        if(settings.allowForward){
+          forwardedIpsStr = req.headers['x-forwarded-for'];
+        }
+
+          //Allow getting cloudflare connecting client IP
+        var cloudFlareConnectingIp = "";
+        if(settings.allowCloudflare){
+          cloudFlareConnectingIp = req.headers['cf-connecting-ip'];
+        }
 
         //Allow getting codio connecting client IP
-        var codioConnectingIp=req.headers['x-real-ip'];
+        var codioConnectingIp = "";
+        if(settings.allowCodio){
+          codioConnectingIp = req.headers['x-real-ip'];
+        }
 
         if (forwardedIpsStr) {
             var forwardedIps = forwardedIpsStr.split(',');
@@ -69,10 +83,12 @@ module.exports = function ipfilter(ips, opts) {
         if (!ipAddress) {
             ipAddress = req.connection.remoteAddress;
         }
-        if(cloudFlareConnectingIp !== undefined){
+
+        if(cloudFlareConnectingIp){
             ipAddress=cloudFlareConnectingIp;
         }
-        if(codioConnectingIp !== undefined){
+
+        if(codioConnectingIp){
             ipAddress=codioConnectingIp;
         }
 

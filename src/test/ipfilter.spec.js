@@ -8,7 +8,7 @@ var ipfilter = require('../index'),
 describe('enforcing IP address blacklist restrictions', function(){
 
     beforeEach(function(){
-        this.ipfilter = ipfilter([ '127.0.0.1' ], { log: false });
+        this.ipfilter = ipfilter([ '127.0.0.1' ], { log: false, allowForward: true });
         this.req = {
             session: {},
             headers: [],
@@ -20,7 +20,7 @@ describe('enforcing IP address blacklist restrictions', function(){
 
     it('should allow all non-blacklisted ips', function( done ){
         this.req.connection.remoteAddress = '127.0.0.2';
-        this.ipfilter( this.req, {}, function(){
+        this.ipfilter( this.req, {}, () => {
             done();
         });
     });
@@ -34,7 +34,7 @@ describe('enforcing IP address blacklist restrictions', function(){
 
     it('should allow all non-blacklisted forwarded ips', function( done ){
         this.req.headers['x-forwarded-for'] = '127.0.0.2';
-        this.ipfilter( this.req, {}, function(){
+        this.ipfilter( this.req, {}, () => {
             done();
         });
     });
@@ -42,32 +42,32 @@ describe('enforcing IP address blacklist restrictions', function(){
     it('should deny all blacklisted ips', function( done ){
         this.req.connection.remoteAddress = '127.0.0.1';
         var res = {
-            end: function(){
+            end: () => {
                 assert.equal( 401, res.statusCode );
                 done();
             }
         };
 
-        this.ipfilter( this.req, res, function(){});
+        this.ipfilter( this.req, res, () => {});
     });
 
-    it('should deny all blacklisted forwarded ips', function( done ){
+    it('should deny all blacklisted forwarded ips', function(done){
         this.req.headers['x-forwarded-for'] = '127.0.0.1';
         var res = {
-            end: function(){
+            end: () => {
                 assert.equal( 401, res.statusCode );
                 done();
             }
         };
 
-        this.ipfilter( this.req, res, function(){});
+        this.ipfilter( this.req, res, () => {});
     });
 });
 
-describe('enforcing IP address whitelist restrictions', function(){
+describe('enforcing IP address whitelist restrictions', () => {
 
-    beforeEach(function(){
-        this.ipfilter = ipfilter([ '127.0.0.1' ], { log: false, mode: 'allow' });
+    beforeEach(function() {
+        this.ipfilter = ipfilter([ '127.0.0.1' ], { log: false, mode: 'allow', allowForward: true });
         this.req = {
             session: {},
             headers: [],
@@ -77,14 +77,14 @@ describe('enforcing IP address whitelist restrictions', function(){
         };
     });
 
-    it('should allow whitelisted ips', function( done ){
+    it('should allow whitelisted ips', function(done){
         this.req.connection.remoteAddress = '127.0.0.1';
         this.ipfilter( this.req, {}, function(){
             done();
         });
     });
 
-    it('should allow whitelisted forwarded ips', function( done ){
+    it('should allow whitelisted forwarded ips', function(done){
         this.req.headers['x-forwarded-for'] = '127.0.0.1';
         this.ipfilter( this.req, {}, function(){
             done();
@@ -127,7 +127,7 @@ describe('using cidr block',function(){
     describe('enforcing whitelist restrictions',function(){
         beforeEach(function(){
             // Ip range: 127.0.0.1 - 127.0.0.14
-            this.ipfilter = ipfilter([ '127.0.0.1/28' ], { log: false, mode: 'allow' });
+            this.ipfilter = ipfilter([ '127.0.0.1/28' ], { log: false, mode: 'allow', allowForward: true });
             this.req = {
                 session: {},
                 headers: [],
@@ -179,7 +179,7 @@ describe('using cidr block',function(){
     describe('enforcing IP address blacklist restrictions', function(){
 
         beforeEach(function(){
-            this.ipfilter = ipfilter([ '127.0.0.1/28' ], { log: false });
+            this.ipfilter = ipfilter([ '127.0.0.1/28' ], { log: false, allowForward: true });
             this.req = {
                 session: {},
                 headers: [],
@@ -254,7 +254,7 @@ describe('using ranges',function(){
     describe('enforcing whitelist restrictions',function(){
         beforeEach(function(){
             // Ip range: 127.0.0.1 - 127.0.0.14
-            this.ipfilter = ipfilter([ ['127.0.0.1','127.0.0.3'] ], { log: false, mode: 'allow' });
+            this.ipfilter = ipfilter([ ['127.0.0.1','127.0.0.3'] ], { log: false, mode: 'allow', allowForward: true });
             this.req = {
                 session: {},
                 headers: [],
@@ -346,7 +346,7 @@ describe('using ranges',function(){
     describe('enforcing IP address blacklist restrictions', function(){
 
         beforeEach(function(){
-            this.ipfilter = ipfilter([ ['127.0.0.1','127.0.0.3'] ], { log: false });
+            this.ipfilter = ipfilter([ ['127.0.0.1','127.0.0.3'] ], { log: false, allowForward: true  });
             this.req = {
                 session: {},
                 headers: [],
@@ -413,6 +413,83 @@ describe('using ranges',function(){
                 done();
             });
         });
+    });
+});
+
+describe('disabling forward headers', function(){
+
+    beforeEach(function(){
+        this.ipfilter = ipfilter([ '127.0.0.1' ], { log: false, allowForward: false });
+        this.req = {
+            session: {},
+            headers: [],
+            connection: {
+                remoteAddress: ''
+            }
+        };
+    });
+
+    it('should deny all non-blacklisted forwarded ips', function( done ){
+      this.req.connection.remoteAddress = '127.0.0.1';
+        this.req.headers['x-forwarded-for'] = '127.0.0.2';
+        var res = {
+            end: () => {
+                assert.equal( 401, res.statusCode );
+                done();
+            }
+        };
+
+        this.ipfilter( this.req, res, () => {});
+    });
+});
+
+
+describe('enabling cloudflare headers', function(){
+
+    beforeEach(function(){
+        this.ipfilter = ipfilter([ '127.0.0.1' ], { log: false, allowCloudflare: true });
+        this.req = {
+            session: {},
+            headers: [],
+            connection: {
+                remoteAddress: ''
+            }
+        };
+    });
+
+    it('should allow all non-blacklisted forwarded ips', function( done ){
+      this.req.connection.remoteAddress = '127.0.0.1';
+        this.req.headers['cf-connecting-ip'] = '127.0.0.2';
+        this.ipfilter( this.req, {}, function(){
+            done();
+        });
+    });
+});
+
+describe('disabling cloudflare headers', function(){
+
+    beforeEach(function(){
+        this.ipfilter = ipfilter([ '127.0.0.1' ], { log: false, allowCloudflare: false });
+        this.req = {
+            session: {},
+            headers: [],
+            connection: {
+                remoteAddress: ''
+            }
+        };
+    });
+
+    it('should deny all non-blacklisted forwarded ips', function( done ){
+      this.req.connection.remoteAddress = '127.0.0.1';
+        this.req.headers['cf-connecting-ip'] = '127.0.0.2';
+        var res = {
+            end: () => {
+                assert.equal( 401, res.statusCode );
+                done();
+            }
+        };
+
+        this.ipfilter( this.req, res, () => {});
     });
 });
 
@@ -666,10 +743,10 @@ describe('mixing different types of filters',function(){
 });
 
 //codio Tests
-describe('enforcing codio based client IP address blacklist restrictions', function(){
-
+describe('enforcing codio based client IP address', function(){
+  describe('blacklist restrictions', () => {
     beforeEach(function(){
-        this.ipfilter = ipfilter([ '127.0.0.1' ], { log: false });
+        this.ipfilter = ipfilter([ '127.0.0.1' ], { log: false, allowCodio: true });
         this.req = {
             session: {},
             headers: [],
@@ -697,11 +774,11 @@ describe('enforcing codio based client IP address blacklist restrictions', funct
 
         this.ipfilter( this.req, res, function(){});
     });
+  });
 
-});
-describe('enforcing codio based client IP address whitelist restrictions', function(){
+  describe('whitelist restrictions', () => {
     beforeEach(function(){
-        this.ipfilter = ipfilter([ '127.0.0.1' ], { log: false, mode: 'allow' });
+        this.ipfilter = ipfilter([ '127.0.0.1' ], { log: false, mode: 'allow', allowCodio: true });
         this.req = {
             session: {},
             headers: [],
@@ -728,7 +805,28 @@ describe('enforcing codio based client IP address whitelist restrictions', funct
 
         this.ipfilter( this.req, res, function(){});
     });
+  });
 
+  describe('while disabled', () => {
+    beforeEach(function(){
+        this.ipfilter = ipfilter([ '127.0.0.1' ], { log: false, mode: 'allow', allowCodio: false });
+        this.req = {
+            session: {},
+            headers: [],
+            connection: {
+                remoteAddress: ''
+            }
+        };
+    });
+
+    it('should allow all whitelisted forwarded ips', function( done ){
+        this.req.headers['x-real-ip'] = '127.0.0.2';
+        this.req.connection.remoteAddress = '127.0.0.1';
+        this.ipfilter( this.req, {}, function(){
+            done();
+        });
+    });
+  });
 });
 
 describe('mixing different types of filters with IPv4 and IPv6',function(){
