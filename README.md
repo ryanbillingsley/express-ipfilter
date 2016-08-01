@@ -102,6 +102,10 @@ Run tests by using
 This will run `eslint`,`babel`, and `mocha` and output coverage data into `coverage`.  Any pull request you submit needs to be accompanied by a test.
 
 ## Changelog
+
+0.1.0
+* Changed default behavior of the library to disable reading forwarded IP headers. They must now be explicitly enabled.
+
 0.0.25
 * Switched from netmask to range_check (uses ipaddr.js)
 * Added support for IPv6 CIDR
