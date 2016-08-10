@@ -39,7 +39,8 @@ module.exports = function(grunt){
       ci: {
         src: 'test/**/*.js',
         options: {
-          reporter: 'mocha-junit-reporter'
+          reporter: 'mocha-junit-reporter',
+          captureFile: 'junit/test-results.xml'
         }
       }
     },
