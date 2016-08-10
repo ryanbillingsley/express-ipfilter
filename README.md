@@ -105,6 +105,7 @@ This will run `eslint`,`babel`, and `mocha` and output coverage data into `cover
 
 0.1.0
 * Changed default behavior of the library to disable reading forwarded IP headers. They must now be explicitly enabled.
+* Using `res.send` when a failure occurs to allow for different formats of `errorMessage`
 
 0.0.25
 * Switched from netmask to range_check (uses ipaddr.js)
