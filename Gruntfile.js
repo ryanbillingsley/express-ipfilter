@@ -57,9 +57,12 @@ module.exports = function(grunt){
         }
       }
     },
+    checkDependencies: {
+      this: {}
+    },
   });
 
-  grunt.registerTask('default', ['eslint','babel:dist']);
-  grunt.registerTask('test', ['eslint','babel','mocha_istanbul']);
-  grunt.registerTask('ci', ['eslint','babel','mochaTest:ci','mocha_istanbul:ci','copy:ci']);
+  grunt.registerTask('default', ['checkDependencies','eslint','babel:dist']);
+  grunt.registerTask('test', ['checkDependencies','eslint','babel','mocha_istanbul']);
+  grunt.registerTask('ci', ['checkDependencies','eslint','babel','mochaTest:ci','mocha_istanbul:ci','copy:ci']);
 };
