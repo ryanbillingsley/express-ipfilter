@@ -5,7 +5,7 @@ module.exports = function(grunt){
   grunt.initConfig({
     watch: {
       scripts: {
-        files: ['src/**/*.js'],
+        files: ['src/**/*.js', 'test/**/*.js'],
         tasks: ['test'],
         options: {
           spawn: false
@@ -20,7 +20,10 @@ module.exports = function(grunt){
       }
     },
     eslint: {
-      all: ['Gruntfile.js', 'lib/**/*.js', 'test/**/*.js']
+      all: ['Gruntfile.js', 'src/**/*.js', 'test/**/*.js'],
+      options: {
+        'ecmaVersion': 6
+      }
     },
     'babel': {
       options: {
@@ -29,11 +32,6 @@ module.exports = function(grunt){
       dist: {
         files: {
           'lib/ipfilter.js': 'src/ipfilter.js'
-        }
-      },
-      test: {
-        files: {
-          'test/ipfilter.spec.js': 'src/test/ipfilter.spec.js'
         }
       }
     },
