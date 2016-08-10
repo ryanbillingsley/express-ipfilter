@@ -3,5 +3,4 @@ coverage/
 .jshintrc
 npm-debug.log
 .ideatest/
-test/
 test-results.xml
