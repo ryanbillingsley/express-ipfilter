@@ -5,7 +5,7 @@ module.exports = function(grunt){
   grunt.initConfig({
     watch: {
       scripts: {
-        files: ['src/**/*.js'],
+        files: ['src/**/*.js', 'test/**/*.js'],
         tasks: ['test'],
         options: {
           spawn: false
@@ -20,7 +20,10 @@ module.exports = function(grunt){
       }
     },
     eslint: {
-      all: ['Gruntfile.js', 'lib/**/*.js', 'test/**/*.js']
+      all: ['Gruntfile.js', 'src/**/*.js', 'test/**/*.js'],
+      options: {
+        'ecmaVersion': 6
+      }
     },
     'babel': {
       options: {
@@ -30,18 +33,14 @@ module.exports = function(grunt){
         files: {
           'lib/ipfilter.js': 'src/ipfilter.js'
         }
-      },
-      test: {
-        files: {
-          'test/ipfilter.spec.js': 'src/test/ipfilter.spec.js'
-        }
       }
     },
     mochaTest: {
       ci: {
         src: 'test/**/*.js',
         options: {
-          reporter: 'mocha-junit-reporter'
+          reporter: 'mocha-junit-reporter',
+          captureFile: 'junit/test-results.xml'
         }
       }
     },
@@ -59,9 +58,12 @@ module.exports = function(grunt){
         }
       }
     },
+    checkDependencies: {
+      this: {}
+    },
   });
 
-  grunt.registerTask('default', ['eslint','babel:dist']);
-  grunt.registerTask('test', ['eslint','babel','mocha_istanbul']);
-  grunt.registerTask('ci', ['eslint','babel','mochaTest:ci','mocha_istanbul:ci','copy:ci']);
+  grunt.registerTask('default', ['checkDependencies','eslint','babel:dist']);
+  grunt.registerTask('test', ['checkDependencies','eslint','babel','mocha_istanbul']);
+  grunt.registerTask('ci', ['checkDependencies','eslint','babel','mochaTest:ci','mocha_istanbul:ci','copy:ci']);
 };
