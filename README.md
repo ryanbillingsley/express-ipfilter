@@ -103,6 +103,9 @@ This will run `eslint`,`babel`, and `mocha` and output coverage data into `cover
 
 ## Changelog
 
+0.1.1
+* Added a favicon to the example to supress the 404 error looking for it.
+
 0.1.0
 * Changed default behavior of the library to disable reading forwarded IP headers. They must now be explicitly enabled.
 * Using `res.send` when a failure occurs to allow for different formats of `errorMessage`
