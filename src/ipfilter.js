@@ -12,6 +12,7 @@
 var _ = require('lodash');
 var iputil = require('ip');
 var rangeCheck = require('range_check');
+var IpDeniedError = require('./deniedError');
 
 /**
  * express-ipfilter:
@@ -201,7 +202,7 @@ module.exports = function ipfilter(ips, opts) {
       settings.logF('Access denied to IP address: ' + ip);
     }
 
-    res.statusCode = settings.errorCode;
-    return res.send(settings.errorMessage);
+    var err = new IpDeniedError('Access denied to IP address: ' + ip);
+    return next(err);
   };
 };

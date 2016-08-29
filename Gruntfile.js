@@ -31,7 +31,8 @@ module.exports = function(grunt){
       },
       dist: {
         files: {
-          'lib/ipfilter.js': 'src/ipfilter.js'
+          'lib/ipfilter.js': 'src/ipfilter.js',
+          'lib/deniedError.js': 'src/deniedError.js'
         }
       }
     },
