@@ -9,7 +9,8 @@ var favicon = require('serve-favicon');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
-var ipfilter = require('express-ipfilter');
+var ipfilter = require('express-ipfilter').IpFilter;
+var IpDeniedError = require('express-ipfilter').IpDeniedError;
 
 var app = express();
 
@@ -26,7 +27,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 var ips = ['::ffff:127.0.0.1'];
-app.use(ipfilter(ips, { errorMessage: { message: 'You are not allowed' }}));
+app.use(ipfilter(ips, {}));
 
 app.use('/', routes);
 app.use('/users', users);
@@ -43,10 +44,16 @@ app.use(function(req, res, next) {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
-  app.use(function(err, req, res) {
-    res.status(err.status || 500);
+  app.use(function(err, req, res, _next) {
+    console.log('Error handler', err);
+    if(err instanceof IpDeniedError){
+      res.status(401);
+    }else{
+      res.status(err.status || 500);
+    }
+
     res.render('error', {
-      message: err.message,
+      message: 'You shall not pass',
       error: err
     });
   });
@@ -54,7 +61,8 @@ if (app.get('env') === 'development') {
 
 // production error handler
 // no stacktraces leaked to user
-app.use(function(err, req, res) {
+app.use(function(err, req, res, _next) {
+  console.log('Error handler', err);
   res.status(err.status || 500);
   res.render('error', {
     message: err.message,

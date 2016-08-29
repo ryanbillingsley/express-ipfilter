@@ -2,9 +2,9 @@
 
 'use strict';
 
-var ipfilter = require('../index');
+var ipfilter = require('../index').IpFilter;
+var IpDeniedError = require('../index').IpDeniedError;
 var assert = require('assert');
-var IpDeniedError = require('../lib/deniedError.js');
 
 describe('enforcing IP address blacklist restrictions', function () {
 
