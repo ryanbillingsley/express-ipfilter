@@ -6,7 +6,7 @@ This package provides easy IP based access control. This can be achieved either 
 [![Circle CI](https://circleci.com/gh/baminteractive/express-ipfilter/tree/master.svg?style=svg)](https://circleci.com/gh/baminteractive/express-ipfilter/tree/master)
 
 ## Version
-0.1.0
+0.2.0
 
 ## Installation
 
@@ -102,6 +102,9 @@ Run tests by using
 This will run `eslint`,`babel`, and `mocha` and output coverage data into `coverage`.  Any pull request you submit needs to be accompanied by a test.
 
 ## Changelog
+
+0.2.0
+* Changed how error handling works
 
 0.1.1
 * Added a favicon to the example to supress the 404 error looking for it.
