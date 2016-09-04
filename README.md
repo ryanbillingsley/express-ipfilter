@@ -6,7 +6,7 @@ This package provides easy IP based access control. This can be achieved either 
 [![Circle CI](https://circleci.com/gh/baminteractive/express-ipfilter/tree/master.svg?style=svg)](https://circleci.com/gh/baminteractive/express-ipfilter/tree/master)
 
 ## Version
-0.1.0
+0.2.0
 
 ## Installation
 
@@ -16,14 +16,14 @@ Recommended installation is with npm. To add node-ipfilter to your project, do:
 
 ## Usage with Express
 
-> NOTE: Starting with version 0.1.0, allow forwarded IP addresses through headers (forward, Cloudflare, Codio) are disabled by **default**. You must explicitly enable these features with the new settings.
+> NOTE: Starting with version 0.1.0, allow forwarded IP addresses through headers (forward, Cloudflare, Codio) are disabled by **default**. You must explicitly enable them by adding them to the `allowedHeaders` list.
 
 Blacklisting certain IP addresses, while allowing all other IPs:
 
 ```javascript
 // Init dependencies
 var express = require('express')
-    , ipfilter = require('express-ipfilter')
+    , ipfilter = require('express-ipfilter').IpFilter
     , app = express.createServer()
     ;
 
@@ -40,7 +40,7 @@ Whitelisting certain IP addresses, while denying all other IPs:
 ```javascript
 // Init dependencies
 var express = require('express')
-    , ipfilter = require('express-ipfilter')
+    , ipfilter = require('express-ipfilter').IpFilter
     , app = express.createServer()
     ;
 
@@ -72,17 +72,15 @@ app.use(ipfilter(ips, {mode: 'allow'}));
 app.listen(3000);
 ```
 
+> See the example app for an example of how to handle errors.
+
 ## Options
 
 | Property      | Description   | Type  | Default|
 | ------------- |-------------| -----|--------|
 | mode   | whether to *deny* or *allow* to the IPs provided | string|deny|
 | log   | console log actions | boolean|true|
-| errorCode   | the HTTP status code to use when denying access | number|401|
-| errorMessage   | the error message to use when denying access | string|Unauthorized|
-| allowForward | Enable or disable forwarded ip address through the request heards | boolean | false |
-| allowCloudflare | Enable or disable CloudFlare forwarded ip address through the request heards | boolean | false |
-| allowCodio | Enable or disable Codio forwarded ip address through the request heards | boolean | false |
+| allowedHeaders | an array of strings for header names that are acceptable for retrieving an IP address | array | [] |
 | excluding   | routes that should be excluded from ip filtering | array|[]|
 
 ## Contributing
@@ -102,6 +100,12 @@ Run tests by using
 This will run `eslint`,`babel`, and `mocha` and output coverage data into `coverage`.  Any pull request you submit needs to be accompanied by a test.
 
 ## Changelog
+
+0.2.0
+* Changed how error handling works
+* Removed settings for specific vendor ip addresses and added `allowedHeaders` to support those header-based IP addresses.
+* You must now specifically require `IpFilter`, i.e. `var ipfilter = require('express-ipfilter').IpFilter;`
+* If you want to handle errors you must require the error type as well `var IpDeniedError = require('express-ipfilter').IpDeniedError;`
 
 0.1.1
 * Added a favicon to the example to supress the 404 error looking for it.
