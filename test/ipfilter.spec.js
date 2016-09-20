@@ -486,6 +486,55 @@ describe('external logger function', function () {
 
 describe('LogLevel function', function () {
 
+
+  it('should log deny if log level is set to default', function (done) {
+    var messages = [];
+    var logF = function logFF(message) {
+      messages.push(message);
+    };
+    this.ipfilter = ipfilter(['127.0.0.1'], { log: true, logF: logF });
+    this.req = {
+      session: {},
+      headers: [],
+      connection: {
+        remoteAddress: ''
+      }
+    };
+
+    this.req.connection.remoteAddress = '127.0.0.1';
+
+    var next = function(){
+      assert.equal('Access denied to IP address: 127.0.0.1', messages[0]);
+      done();
+    };
+
+    this.ipfilter(this.req, function(){}, next);
+  });
+
+  it('should log allow if log level is set to default', function (done) {
+    var messages = [];
+    var logF = function logFF(message) {
+      messages.push(message);
+    };
+    this.ipfilter = ipfilter(['127.0.0.1'], { log: true, logF: logF });
+    this.req = {
+      session: {},
+      headers: [],
+      connection: {
+        remoteAddress: ''
+      }
+    };
+
+    this.req.connection.remoteAddress = '127.0.0.2';
+
+    var next = function(){
+      assert.equal('Access granted to IP address: 127.0.0.2', messages[0]);
+      done();
+    };
+
+    this.ipfilter(this.req, function(){}, next);
+  });
+
   it('should log deny if log level is set to all', function (done) {
     var messages = [];
     var logF = function logFF(message) {
