@@ -22,10 +22,8 @@ Blacklisting certain IP addresses, while allowing all other IPs:
 
 ```javascript
 // Init dependencies
-var express = require('express')
-    , ipfilter = require('express-ipfilter').IpFilter
-    , app = express.createServer()
-    ;
+var express = require('express'),
+    ipfilter = require('express-ipfilter').IpFilter;
 
 // Blacklist the following IPs
 var ips = ['127.0.0.1'];
@@ -39,17 +37,17 @@ Whitelisting certain IP addresses, while denying all other IPs:
 
 ```javascript
 // Init dependencies
-var express = require('express')
-    , ipfilter = require('express-ipfilter').IpFilter
-    , app = express.createServer()
-    ;
+// Init dependencies
+var express = require('express'),
+    ipfilter = require('express-ipfilter').IpFilter;
 
 // Whitelist the following IPs
 var ips = ['127.0.0.1'];
 
 // Create the server
 app.use(ipfilter(ips, {mode: 'allow'}));
-app.listen(3000);
+
+module.exports = app;
 ```
 
 Using CIDR subnet masks for ranges:
@@ -59,7 +57,8 @@ var ips = ['127.0.0.1/24'];
 
 // Create the server
 app.use(ipfilter(ips, {mode: 'allow'}));
-app.listen(3000);
+
+module.exports = app;
 ```
 
 Using IP ranges:
@@ -69,7 +68,8 @@ var ips = [['127.0.0.1','127.0.0.10']];
 
 // Create the server
 app.use(ipfilter(ips, {mode: 'allow'}));
-app.listen(3000);
+
+module.exports = app;
 ```
 
 > See the example app for an example of how to handle errors.
