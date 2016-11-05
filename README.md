@@ -6,7 +6,7 @@ This package provides easy IP based access control. This can be achieved either 
 [![Circle CI](https://circleci.com/gh/baminteractive/express-ipfilter/tree/master.svg?style=svg)](https://circleci.com/gh/baminteractive/express-ipfilter/tree/master)
 
 ## Version
-0.2.0
+0.2.1
 
 ## Installation
 
@@ -80,6 +80,7 @@ app.listen(3000);
 | ------------- |-------------| -----|--------|
 | mode   | whether to *deny* or *allow* to the IPs provided | string|deny|
 | log   | console log actions | boolean|true|
+| logLevel | level of logging (*all*,*deny*,*allow*) | string | all
 | allowedHeaders | an array of strings for header names that are acceptable for retrieving an IP address | array | [] |
 | excluding   | routes that should be excluded from ip filtering | array|[]|
 
@@ -100,6 +101,9 @@ Run tests by using
 This will run `eslint`,`babel`, and `mocha` and output coverage data into `coverage`.  Any pull request you submit needs to be accompanied by a test.
 
 ## Changelog
+
+0.2.1
+* Add log level property.
 
 0.2.0
 * Changed how error handling works
