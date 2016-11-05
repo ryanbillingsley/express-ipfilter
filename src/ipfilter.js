@@ -36,8 +36,8 @@ var IpDeniedError = require('./deniedError');
     - 'allowCodio' whether to allow Codio forwarded headers.
  *  - 'excluding' routes that should be excluded from ip filtering
  *
- * @param [Array] IP addresses
- * @param {Object} options
+ * @param [ips] {Array} IP addresses
+ * @param [opts] {Object} options
  * @api public
  */
 module.exports = function ipfilter(ips, opts) {
@@ -171,7 +171,7 @@ module.exports = function ipfilter(ips, opts) {
 
     if(matchClientIp(ip,req)) {
       // Grant access
-      if(settings.log) {
+      if(settings.log && settings.logLevel !== 'deny') {
         settings.logF('Access granted to IP address: ' + ip);
       }
 
@@ -179,7 +179,7 @@ module.exports = function ipfilter(ips, opts) {
     }
 
     // Deny access
-    if(settings.log) {
+    if(settings.log && settings.logLevel !== 'allow') {
       settings.logF('Access denied to IP address: ' + ip);
     }
 
