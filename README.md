@@ -72,7 +72,30 @@ app.use(ipfilter(ips, {mode: 'allow'}));
 module.exports = app;
 ```
 
-> See the example app for an example of how to handle errors.
+## Error Handling
+
+When an IP is denied, an IpDeniedError will be thrown by the middleware. If you do not handle the error, it will cause your app to crash due to an unhandled exception. Here is an example of how to handle the error, which can also be found in the example app:
+
+```
+if (app.get('env') === 'development') {
+  app.use(function(err, req, res, _next) {
+    console.log('Error handler', err);
+    if(err instanceof IpDeniedError){
+      res.status(401);
+    }else{
+      res.status(err.status || 500);
+    }
+
+    res.render('error', {
+      message: 'You shall not pass',
+      error: err
+    });
+  });
+}
+```
+
+You will need to require the `IpDeniedError` type in order to handle it.
+
 
 ## Options
 
