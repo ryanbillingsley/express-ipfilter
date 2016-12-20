@@ -29,11 +29,10 @@ var IpDeniedError = require('./deniedError');
  * Options:
  *
  *  - `mode` whether to deny or grant access to the IPs provided. Defaults to 'deny'.
+ *  - `logF` Function to use for logging.
  *  - `log` console log actions. Defaults to true.
-    - `allowPrivateIPs` whether to allow private IPs.
-    - `allowForward` whether to allow forwarded IPs.
-    - `allowCloudflare` whether to allow CloudFlare forwarded headers.
-    - 'allowCodio' whether to allow Codio forwarded headers.
+ *  - `allowPrivateIPs` whether to allow private IPs.
+ *  - `allowedHeaders` Array of headers to check for forwarded IPs.
  *  - 'excluding' routes that should be excluded from ip filtering
  *
  * @param [ips] {Array} IP addresses
