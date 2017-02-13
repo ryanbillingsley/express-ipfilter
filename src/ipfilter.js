@@ -50,15 +50,16 @@ module.exports = function ipfilter(ips, opts) {
     logF: logger,
     allowedHeaders: [],
     allowPrivateIPs: false,
-    excluding: []
+    excluding: [],
+    detectIp: getClientIp
   });
 
-  var getClientIp = function(req) {
+  function getClientIp(req) {
     var ipAddress;
 
     var headerIp = _.reduce(settings.allowedHeaders, function(acc, header){
       var testIp = req.headers[header];
-      if(testIp!= ''){
+      if(testIp != ''){
         acc = testIp;
       }
 
@@ -78,12 +79,12 @@ module.exports = function ipfilter(ips, opts) {
       return '';
     }
 
-    if(ipAddress.indexOf(':') !== -1 && ipAddress.indexOf('::') === -1){
-      ipAddress = ipAddress.split(':')[0];
+    if(iputil.isV6Format(ipAddress) && ~ipAddress.indexOf('::ffff')){
+      ipAddress = ipAddress.split('::ffff:')[1];
     }
 
     return ipAddress;
-  };
+  }
 
   var matchClientIp = function(ip){
     var mode = settings.mode.toLowerCase();
@@ -164,7 +165,7 @@ module.exports = function ipfilter(ips, opts) {
       }
     }
 
-    var ip = getClientIp(req);
+    var ip = settings.detectIp(req);
     // If no IPs were specified, skip
     // this middleware
     if(!ips || !ips.length) { return next(); }
