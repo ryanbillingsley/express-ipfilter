@@ -27,7 +27,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 var ips = ['::ffff:127.0.0.1'];
-app.use(ipfilter(ips, {}));
+app.use(ipfilter(ips, {mode: 'allow'}));
 
 app.use('/', routes);
 app.use('/users', users);

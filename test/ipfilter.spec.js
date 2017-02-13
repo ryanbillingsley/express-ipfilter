@@ -33,6 +33,13 @@ describe('enforcing IP address blacklist restrictions', function () {
     });
   });
 
+  it('should allow all non-blacklisted IPv4 ips through the IPv6 standard', function (done) {
+    this.req.connection.remoteAddress = '::ffff:127.0.0.2';
+    this.ipfilter(this.req, {}, function () {
+      done();
+    });
+  });
+
   it('should allow all non-blacklisted forwarded ips', function (done) {
     this.req.headers['x-forwarded-for'] = '127.0.0.2';
     this.ipfilter(this.req, {}, function () {
@@ -45,6 +52,10 @@ describe('enforcing IP address blacklist restrictions', function () {
     checkError(this.ipfilter, this.req, done);
   });
 
+  it('should deny an IPv4 ip transmitted as IPv6', function(done){
+    this.req.connection.remoteAddress = '::ffff:127.0.0.1';
+    checkError(this.ipfilter, this.req, done);
+  });
 
   it('should deny all blacklisted forwarded ips', function (done) {
     this.req.headers['x-forwarded-for'] = '127.0.0.1';
@@ -950,6 +961,33 @@ describe('mixing different types of filters with IPv4 and IPv6', function () {
       this.req.connection.remoteAddress = '127.0.0.15';
       checkError(this.ipfilter, this.req, done);
     });
+  });
+});
+
+
+describe('using a custom ip detection function', function(){
+  beforeEach(function () {
+    function detectIp(req){
+      var ipAddress;
+
+      ipAddress = req.connection.remoteAddress.replace(/\//g, '.');
+
+      return ipAddress;
+    }
+
+    this.ipfilter = ipfilter(['127.0.0.1'], { detectIp: detectIp, log: false, allowedHeaders: ['x-forwarded-for'] });
+    this.req = {
+      session: {},
+      headers: [],
+      connection: {
+        remoteAddress: ''
+      }
+    };
+  });
+
+  it('should find the ip correctly', function(done){
+    this.req.connection.remoteAddress = '127/0/0/1';
+    checkError(this.ipfilter, this.req, done);
   });
 });
 

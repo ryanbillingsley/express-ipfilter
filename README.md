@@ -6,7 +6,7 @@ This package provides easy IP based access control. This can be achieved either 
 [![Circle CI](https://circleci.com/gh/baminteractive/express-ipfilter/tree/master.svg?style=svg)](https://circleci.com/gh/baminteractive/express-ipfilter/tree/master)
 
 ## Version
-0.2.1
+0.2.2
 
 ## Installation
 
@@ -106,6 +106,24 @@ You will need to require the `IpDeniedError` type in order to handle it.
 | logLevel | level of logging (*all*,*deny*,*allow*) | string | all
 | allowedHeaders | an array of strings for header names that are acceptable for retrieving an IP address | array | [] |
 | excluding   | routes that should be excluded from ip filtering | array|[]|
+| detectIp | define a custom function that takes an Express request object and returns an IP address to test against | function | built-in detection |
+
+> A note on detectIp
+
+If you need to parse an IP address in a way that is not supported by default, you can write your own parser and pass that to `ipfilter`. 
+
+```
+function customDetection(req){
+  var ipAddress;
+
+  ipAddress = req.connection.remoteAddress.replace(/\//g, '.');
+
+  return ipAddress;
+}
+
+ipfilter(ids, {detectIp: customDetection});
+
+```
 
 ## Contributing
 
