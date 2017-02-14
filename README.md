@@ -6,7 +6,7 @@ This package provides easy IP based access control. This can be achieved either 
 [![Circle CI](https://circleci.com/gh/baminteractive/express-ipfilter/tree/master.svg?style=svg)](https://circleci.com/gh/baminteractive/express-ipfilter/tree/master)
 
 ## Version
-0.2.2
+0.2.3
 
 ## Installation
 
@@ -110,7 +110,7 @@ You will need to require the `IpDeniedError` type in order to handle it.
 
 > A note on detectIp
 
-If you need to parse an IP address in a way that is not supported by default, you can write your own parser and pass that to `ipfilter`. 
+If you need to parse an IP address in a way that is not supported by default, you can write your own parser and pass that to `ipfilter`.
 
 ```
 function customDetection(req){
@@ -142,6 +142,13 @@ Run tests by using
 This will run `eslint`,`babel`, and `mocha` and output coverage data into `coverage`.  Any pull request you submit needs to be accompanied by a test.
 
 ## Changelog
+
+0.2.3
+* Fixed a bug that sent all logging through instead of just deined requests
+
+0.2.2
+* Added a customization point for IP detection
+* Fixed a bug with IPv4 over IPv6
 
 0.2.1
 * Add log level property.
