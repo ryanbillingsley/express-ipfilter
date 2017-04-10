@@ -82,6 +82,10 @@ module.exports = function ipfilter(ips, opts) {
       ipAddress = ipAddress.split('::ffff:')[1];
     }
 
+    if(iputil.isV4Format(ipAddress) && ~ipAddress.indexOf(':')){
+      ipAddress = ipAddress.split(':')[0];
+    }
+
     return ipAddress;
   }
 
