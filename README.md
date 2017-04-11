@@ -6,7 +6,7 @@ This package provides easy IP based access control. This can be achieved either 
 [![Circle CI](https://circleci.com/gh/baminteractive/express-ipfilter/tree/master.svg?style=svg)](https://circleci.com/gh/baminteractive/express-ipfilter/tree/master)
 
 ## Version
-0.2.3
+0.2.4
 
 ## Installation
 
@@ -143,8 +143,11 @@ This will run `eslint`,`babel`, and `mocha` and output coverage data into `cover
 
 ## Changelog
 
+0.2.4
+* For IPv4 addresses that have a port (as experienced with Azure web apps), the port is now stripped before comparing it with the contents of the whitelist or blacklist. Fixes issue #49.
+
 0.2.3
-* Fixed a bug that sent all logging through instead of just deined requests
+* Fixed a bug that sent all logging through instead of just denied requests
 
 0.2.2
 * Added a customization point for IP detection
@@ -160,7 +163,7 @@ This will run `eslint`,`babel`, and `mocha` and output coverage data into `cover
 * If you want to handle errors you must require the error type as well `var IpDeniedError = require('express-ipfilter').IpDeniedError;`
 
 0.1.1
-* Added a favicon to the example to supress the 404 error looking for it.
+* Added a favicon to the example to suppress the 404 error looking for it.
 
 0.1.0
 * Changed default behavior of the library to disable reading forwarded IP headers. They must now be explicitly enabled.
