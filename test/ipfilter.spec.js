@@ -136,6 +136,13 @@ describe('using cidr block', function () {
       });
     });
 
+    it('should allow whitelisted forwarded ips with ports', function (done) {
+      this.req.headers['x-forwarded-for'] = '127.0.0.1:23456';
+      this.ipfilter(this.req, {}, function () {
+        done();
+      });
+    });
+
     it('should deny all non-whitelisted ips', function (done) {
       this.req.connection.remoteAddress = '127.0.0.17';
       checkError(this.ipfilter, this.req, done);
@@ -241,13 +248,30 @@ describe('using ranges', function () {
       });
     });
 
+    it('should allow whitelisted forwarded ips with ports', function (done) {
+      this.req.headers['x-forwarded-for'] = '127.0.0.1:23456';
+      this.ipfilter(this.req, {}, function () {
+        done();
+      });
+    });
+
     it('should deny all non-whitelisted ips', function (done) {
       this.req.connection.remoteAddress = '127.0.0.17';
       checkError(this.ipfilter, this.req, done);
     });
 
+    it('should deny all non-whitelisted ips with ports', function (done) {
+      this.req.connection.remoteAddress = '127.0.0.17:23456';
+      checkError(this.ipfilter, this.req, done);
+    });
+
     it('should deny all non-whitelisted forwarded ips', function (done) {
       this.req.headers['x-forwarded-for'] = '127.0.0.17';
+      checkError(this.ipfilter, this.req, done);
+    });
+
+    it('should deny all non-whitelisted forwarded ips with ports', function (done) {
+      this.req.headers['x-forwarded-for'] = '127.0.0.17:23456';
       checkError(this.ipfilter, this.req, done);
     });
   });
