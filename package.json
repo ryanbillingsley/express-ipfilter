@@ -1,7 +1,7 @@
 {
   "name": "express-ipfilter",
   "description": "A light-weight IP address based filtering system",
-  "version": "0.3.0",
+  "version": "0.2.5",
   "author": "BaM Interactive",
   "dependencies": {
     "ip": "~1.1.0",
