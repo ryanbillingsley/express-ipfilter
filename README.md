@@ -143,6 +143,9 @@ This will run `eslint`,`babel`, and `mocha` and output coverage data into `cover
 
 ## Changelog
 
+0.3.0
+* Added fields `status` and `statusCode` to the IpDeniedError object, which both equal `403`.
+
 0.2.4
 * For IPv4 addresses that have a port (as experienced with Azure web apps), the port is now stripped before comparing it with the contents of the whitelist or blacklist. Fixes issue #49.
 
