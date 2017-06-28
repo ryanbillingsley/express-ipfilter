@@ -3,6 +3,7 @@ module.exports = function IpDeniedError(message, extra) {
   this.name = this.constructor.name;
   this.message = message || 'The requesting IP was denied';
   this.extra = extra;
+  this.status = this.statusCode = 403;
 };
 
 require('util').inherits(module.exports, Error);
