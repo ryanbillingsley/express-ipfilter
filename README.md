@@ -72,6 +72,17 @@ app.use(ipfilter(ips, {mode: 'allow'}));
 module.exports = app;
 ```
 
+Using a function to get Ips:
+
+```javascript
+var ips = function() { return ['127.0.0.1']; };
+
+// Create the server
+app.use(ipfilter(ips, {mode: 'allow'}));
+
+module.exports = app;
+```
+
 ## Error Handling
 
 When an IP is denied, an IpDeniedError will be thrown by the middleware. If you do not handle the error, it will cause your app to crash due to an unhandled exception. Here is an example of how to handle the error, which can also be found in the example app:

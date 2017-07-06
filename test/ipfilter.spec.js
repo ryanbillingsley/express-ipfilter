@@ -1048,4 +1048,58 @@ function checkError(ipfilter, req, done){
 
   ipfilter(req, function(){}, next);
 }
+
+describe('using ips as a function', function () {
+
+  var ips = function() { return ['127.0.0.1']; };
+
+  describe('with a whitelist', function () {
+
+    beforeEach(function () {
+      this.ipfilter = ipfilter(ips, { mode: 'allow', log: false });
+      this.req = {
+        session: {},
+        headers: [],
+        connection: {
+          remoteAddress: ''
+        }
+      };
+    });
+
+    it('should allow', function (done) {
+      this.req.connection.remoteAddress = '127.0.0.1';
+      this.ipfilter(this.req, {}, function () {
+        done();
+      });
+    });
+    it('should deny', function (done) {
+      this.req.connection.remoteAddress = '127.0.0.2';
+      checkError(this.ipfilter, this.req, done);
+    });
+  });
+
+  describe('with a blacklist', function () {
+    beforeEach(function () {
+      this.ipfilter = ipfilter(ips, { mode: 'deny', log: false });
+      this.req = {
+        session: {},
+        headers: [],
+        connection: {
+          remoteAddress: ''
+        }
+      };
+    });
+
+    it('should allow', function (done) {
+      this.req.connection.remoteAddress = '127.0.0.2';
+      this.ipfilter(this.req, {}, function () {
+        done();
+      });
+    });
+    it('should deny', function (done) {
+      this.req.connection.remoteAddress = '127.0.0.1';
+      checkError(this.ipfilter, this.req, done);
+    });
+  });
+});
 //# sourceMappingURL=ipfilter.spec.js.map
