@@ -6,7 +6,7 @@ This package provides easy IP based access control. This can be achieved either 
 [![Circle CI](https://circleci.com/gh/baminteractive/express-ipfilter/tree/master.svg?style=svg)](https://circleci.com/gh/baminteractive/express-ipfilter/tree/master)
 
 ## Version
-0.2.5
+0.2.6
 
 ## Installation
 
@@ -138,6 +138,8 @@ ipfilter(ids, {detectIp: customDetection});
 
 ## Contributing
 
+See the `CONTRIBUTING.MD` document for more information on contributing.
+
 ### Building from source
 
 You can run `grunt` to build the source.  This will run `eslint` and `babel` against `src/ipfilter.js`.
@@ -154,7 +156,10 @@ This will run `eslint`,`babel`, and `mocha` and output coverage data into `cover
 
 ## Changelog
 
-0.3.0
+0.2.6
+- Minor change to the Contributing Guidelines to include updating the version numbers
+
+0.2.5
 * Added fields `status` and `statusCode` to the IpDeniedError object, which both equal `403`.
 
 0.2.4
