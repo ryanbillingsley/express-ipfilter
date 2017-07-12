@@ -23,8 +23,10 @@ var IpDeniedError = require('./deniedError');
  *
  *      var ipfilter = require('ipfilter'),
  *          ips = ['127.0.0.1'];
+ *          getIps = function() { return ['127.0.0.1']; };
  *
  *      app.use(ipfilter(ips));
+ *      app.use(ipfilter(getIps));
  *
  * Options:
  *
@@ -35,13 +37,14 @@ var IpDeniedError = require('./deniedError');
  *  - `allowedHeaders` Array of headers to check for forwarded IPs.
  *  - 'excluding' routes that should be excluded from ip filtering
  *
- * @param [ips] {Array} IP addresses
+ * @param [ips] {Array} IP addresses or {Function} that returns the array of IP addresses
  * @param [opts] {Object} options
  * @api public
  */
 module.exports = function ipfilter(ips, opts) {
   ips = ips || false;
 
+  var ipsIsFunction = _.isFunction(ips);
   var logger = function(message){ console.log(message);};
   var settings = _.defaults( opts || {}, {
     mode: 'deny',
@@ -52,6 +55,10 @@ module.exports = function ipfilter(ips, opts) {
     excluding: [],
     detectIp: getClientIp
   });
+
+  function getIps() {
+    return ipsIsFunction ? ips() : ips;
+  }
 
   function getClientIp(req) {
     var ipAddress;
@@ -92,7 +99,7 @@ module.exports = function ipfilter(ips, opts) {
   var matchClientIp = function(ip){
     var mode = settings.mode.toLowerCase();
 
-    var result = _.invoke(ips,testIp,ip,mode);
+    var result = _.invoke(getIps(),testIp,ip,mode);
 
     if(mode === 'allow'){
       return _.some(result);
@@ -135,7 +142,7 @@ module.exports = function ipfilter(ips, opts) {
   };
 
   var testRange = function(ip,constraint,mode){
-    var filteredSet = _.filter(ips,function(constraint){
+    var filteredSet = _.filter(getIps(),function(constraint){
       if(constraint.length > 1){
         var startIp = iputil.toLong(constraint[0]);
         var endIp = iputil.toLong(constraint[1]);
@@ -171,7 +178,8 @@ module.exports = function ipfilter(ips, opts) {
     var ip = settings.detectIp(req);
     // If no IPs were specified, skip
     // this middleware
-    if(!ips || !ips.length) { return next(); }
+    var _ips = getIps();
+    if(!_ips || !_ips.length) { return next(); }
 
     if(matchClientIp(ip,req)) {
       // Grant access

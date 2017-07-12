@@ -10,6 +10,10 @@ Install the dependencies:
 
     npm install
 
+Build the libraries:
+
+    grunt
+
 Make sure the tests pass:
 
     npm test
