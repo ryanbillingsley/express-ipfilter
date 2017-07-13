@@ -14,15 +14,11 @@ Build the libraries:
 
     grunt
 
-Make sure the tests pass:
+**Add tests** for your change. Make sure the tests pass:
 
-    npm test
+    grunt test
 
-Make your change. **Add tests** for your change. Make the tests pass:
-
-    npm test
-
-Update the version number at the top of the README, add your change to the changelog, and update the version in `packet.json`
+Update the version number at the top of the README, add your change to the changelog, and update the version in `package.json`
 
 Push to your fork and [submit a pull request][pr].
 

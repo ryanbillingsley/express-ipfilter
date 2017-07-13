@@ -156,6 +156,11 @@ This will run `eslint`,`babel`, and `mocha` and output coverage data into `cover
 
 ## Changelog
 
+0.3.1
+ * Fixes critical bug that allowed access when ips is empty and mode == 'allow'.
+ * Adds minor speed improvements for middleware.
+ * Minor spelling and documentation fixes in README
+
 0.3.0
  * Adds the ability to pass IPs by function so that we can dynamically retrieve white/black listed addresses.
 

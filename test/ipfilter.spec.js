@@ -64,47 +64,66 @@ describe('enforcing IP address blacklist restrictions', function () {
 });
 
 describe('enforcing IP address whitelist restrictions', function () {
+  describe('with a whitelist with no ips', function () {
+    beforeEach(function () {
+      this.ipfilter = ipfilter([], { mode: 'allow', log: true });
+      this.req = {
+        session: {},
+        headers: [],
+        connection: {
+          remoteAddress: ''
+        }
+      };
+    });
 
-  beforeEach(function () {
-    this.ipfilter = ipfilter(['127.0.0.1'], { log: false, mode: 'allow', allowedHeaders: ['x-forwarded-for'] });
-    this.req = {
-      session: {},
-      headers: [],
-      connection: {
-        remoteAddress: ''
-      }
-    };
-  });
-
-  it('should allow whitelisted ips', function (done) {
-    this.req.connection.remoteAddress = '127.0.0.1';
-    this.ipfilter(this.req, {}, function () {
-      done();
+    it('should deny', function (done) {
+      this.req.connection.remoteAddress = '127.0.0.1';
+      checkError(this.ipfilter, this.req, done);
     });
   });
 
-  it('should allow whitelisted forwarded ips', function (done) {
-    this.req.headers['x-forwarded-for'] = '127.0.0.1';
-    this.ipfilter(this.req, {}, function () {
-      done();
+  describe('with a whitelist with ips', function () {
+    beforeEach(function () {
+      this.ipfilter = ipfilter(['127.0.0.1'], { log: false, mode: 'allow', allowedHeaders: ['x-forwarded-for'] });
+      this.req = {
+        session: {},
+        headers: [],
+        connection: {
+          remoteAddress: ''
+        }
+      };
     });
-  });
 
-  it('should allow whitelisted port ips', function (done) {
-    this.req.connection.remoteAddress = '127.0.0.1:84849';
-    this.ipfilter(this.req, {}, function () {
-      done();
+    it('should allow whitelisted ips', function (done) {
+      this.req.connection.remoteAddress = '127.0.0.1';
+      this.ipfilter(this.req, {}, function () {
+        done();
+      });
     });
-  });
 
-  it('should deny all non-whitelisted ips', function (done) {
-    this.req.connection.remoteAddress = '127.0.0.2';
-    checkError(this.ipfilter, this.req, done);
-  });
+    it('should allow whitelisted forwarded ips', function (done) {
+      this.req.headers['x-forwarded-for'] = '127.0.0.1';
+      this.ipfilter(this.req, {}, function () {
+        done();
+      });
+    });
 
-  it('should deny all non-whitelisted forwarded ips', function (done) {
-    this.req.headers['x-forwarded-for'] = '127.0.0.2';
-    checkError(this.ipfilter, this.req, done);
+    it('should allow whitelisted port ips', function (done) {
+      this.req.connection.remoteAddress = '127.0.0.1:84849';
+      this.ipfilter(this.req, {}, function () {
+        done();
+      });
+    });
+
+    it('should deny all non-whitelisted ips', function (done) {
+      this.req.connection.remoteAddress = '127.0.0.2';
+      checkError(this.ipfilter, this.req, done);
+    });
+
+    it('should deny all non-whitelisted forwarded ips', function (done) {
+      this.req.headers['x-forwarded-for'] = '127.0.0.2';
+      checkError(this.ipfilter, this.req, done);
+    });
   });
 });
 
