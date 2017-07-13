@@ -6,7 +6,7 @@ This package provides easy IP based access control. This can be achieved either 
 [![Circle CI](https://circleci.com/gh/baminteractive/express-ipfilter/tree/master.svg?style=svg)](https://circleci.com/gh/baminteractive/express-ipfilter/tree/master)
 
 ## Version
-0.3.0
+0.3.1
 
 ## Installation
 
@@ -155,6 +155,11 @@ Run tests by using
 This will run `eslint`,`babel`, and `mocha` and output coverage data into `coverage`.  Any pull request you submit needs to be accompanied by a test.
 
 ## Changelog
+
+0.3.1
+ * Fixes critical bug that allowed access when ips is empty and mode == 'allow'.
+ * Adds minor speed improvements for middleware.
+ * Minor spelling and documentation fixes in README
 
 0.3.0
  * Adds the ability to pass IPs by function so that we can dynamically retrieve white/black listed addresses.

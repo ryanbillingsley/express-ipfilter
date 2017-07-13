@@ -44,7 +44,7 @@ var IpDeniedError = require('./deniedError');
 module.exports = function ipfilter(ips, opts) {
   ips = ips || false;
 
-  var ipsIsFunction = _.isFunction(ips);
+  var getIps = _.isFunction(ips) ? ips : function(){ return ips; };
   var logger = function(message){ console.log(message);};
   var settings = _.defaults( opts || {}, {
     mode: 'deny',
@@ -55,10 +55,6 @@ module.exports = function ipfilter(ips, opts) {
     excluding: [],
     detectIp: getClientIp
   });
-
-  function getIps() {
-    return ipsIsFunction ? ips() : ips;
-  }
 
   function getClientIp(req) {
     var ipAddress;
@@ -160,6 +156,11 @@ module.exports = function ipfilter(ips, opts) {
     }
   };
 
+  var error = function(ip, next){
+    var err = new IpDeniedError('Access denied to IP address: ' + ip);
+    return next(err);
+  };
+
   return function(req, res, next) {
     if(settings.excluding.length > 0){
       var results = _.filter(settings.excluding,function(exclude){
@@ -175,11 +176,18 @@ module.exports = function ipfilter(ips, opts) {
       }
     }
 
-    var ip = settings.detectIp(req);
-    // If no IPs were specified, skip
-    // this middleware
     var _ips = getIps();
-    if(!_ips || !_ips.length) { return next(); }
+    if(!_ips || !_ips.length) {
+      if(settings.mode == 'allow'){
+        // ip list is empty, thus no one allowed
+        return error('0.0.0.0/0', next);
+      } else {
+        // there are no blocked ips, skip
+        return next();
+      }
+    }
+
+    var ip = settings.detectIp(req);
 
     if(matchClientIp(ip,req)) {
       // Grant access
@@ -195,7 +203,6 @@ module.exports = function ipfilter(ips, opts) {
       settings.logF('Access denied to IP address: ' + ip);
     }
 
-    var err = new IpDeniedError('Access denied to IP address: ' + ip);
-    return next(err);
+    return error(ip, next);
   };
 };
