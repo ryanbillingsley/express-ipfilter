@@ -6,7 +6,7 @@ This package provides easy IP based access control. This can be achieved either 
 [![Circle CI](https://circleci.com/gh/baminteractive/express-ipfilter/tree/master.svg?style=svg)](https://circleci.com/gh/baminteractive/express-ipfilter/tree/master)
 
 ## Version
-0.3.0
+0.3.1
 
 ## Installation
 
