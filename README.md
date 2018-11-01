@@ -157,8 +157,8 @@ This will run `eslint`,`babel`, and `mocha` and output coverage data into `cover
 ## Changelog
 
 0.3.2
- * Bump the lodash version due to security concerns
- * Update lodash usage in `src/ipfulter.js` for tests to pass
+ * Bump the lodash version due to security concerns - https://nodesecurity.io/advisories/577
+ * Update lodash usage in `src/ipfilter.js` for tests to pass
 
 0.3.1
  * Fixes critical bug that allowed access when ips is empty and mode == 'allow'.
